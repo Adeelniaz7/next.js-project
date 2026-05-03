@@ -3,7 +3,8 @@ import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {z} from "zod";
-
+import { prisma } from "@/lib";
+import type { Topic } from "@/generated/prisma/client";
 const createTopicsSchema = z.object({
     name:z.string().min(3).regex(/^[a-z-]+$/,{message:"Must be lowercase letter without spaces"}),
     description:z.string().min(10)
@@ -40,7 +41,7 @@ export const createTopics = async (prevState:CreateTopicsFormState,formData:Form
             }
         }
     }
-    let topic: 'Topic';
+    let topic: Topic;
     try {
         topic = await prisma.topic.create({
             data:{
